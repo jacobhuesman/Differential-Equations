@@ -1,0 +1,33 @@
+\documentclass[letterpaper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage[left=1.00in, right=1.00in, top=1.00in, bottom=1.00in]{geometry}
+
+\usepackage{parskip}
+\usepackage{enumitem}
+\usepackage[table]{xcolor}
+
+\setcounter{secnumdepth}{3}
+\renewcommand{\thesection}{\arabic{section}.}
+\renewcommand{\thesubsection}{(\alph{subsection})}
+\renewcommand{\thesubsubsection}{Solution}
+
+\title{Introduction to Differential Equations Project Proposal}
+\author{Jacob Huesman}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+Like differential equations, difference equations can be used to model the behavior of a system. The main difference between the two being that a differential equation is used to describe continuous time systems and difference equations are used to describe discrete time systems. Like the Laplace transform of a differential equation, the z-transform of a difference equation can be used to simplify solving a linear time-invariant system. This is very useful, as digital systems represent information in a discrete fashion, and there's also systems that are easier to model in discrete steps rather than as a continuous function.
+
+I would like to present on an example of the application of the z-transform in modeling and solving a financial problem. The problem will be adapted from a problem posed in the signals and systems class I'm currently taking.
+
+\section{Problem}
+Suppose you would like to retire with 10 million dollars in savings. To keep the difference equations simple, let's say that you invest uniform monthly payments for a fixed number of years and that you receive a fixed annual percent yield. Let the interest be compounded monthly. Solve this problem with z-transform techniques for three different interest rates (low, medium, high), over three different time intervals (short, average, long).
+
+\end{document}
