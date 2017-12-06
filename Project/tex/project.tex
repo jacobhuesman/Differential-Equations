@@ -88,7 +88,7 @@ Now putting equation \ref{eq1} in standard form and simplifying we get,
 	y[n] - \left(1 + \frac{i}{100} \right)^{\frac{1}{12}} y[n-1] &= C (u[n] - u[n-12D]) \\
 	\left(1 - \left(1 + \frac{i}{100} \right)^{\frac{1}{12}}E^{-1}\right)y[n] &= C (u[n] - u[n-12D]). \label{eq2}
 \end{align}
-Note that $E^{-1}$ is used to denote a delay operation. Having put equation \ref{eq1} in a more standard form we can take the z-transform of both sides.
+Note that $E^{-1}$ is used to denote a delay operation. Having put equation \ref{eq1} in a more standard form we can take the z-transform of both sides,
 \begin{align}
 	\left(1 - \left(1 + \frac{i}{100} \right)^{\frac{1}{12}}z^{-1}\right)Y(z) &= C \left(\frac{z}{z-1} - \frac{z^{-12D+1}}{z-1} \right).
 \end{align}
@@ -105,11 +105,11 @@ where
 \end{align}
 Note that a delay in the time domain corresponds to a negative power of z in the z-domain by the time shifting property:
 \begin{align}
-	\text{If }m>0: x[n-m]u[n-m] \stackrel{Z_u}{\Longleftrightarrow} z^{-m} X(z). \label{prop1}
+	\text{If }m>0: x[n-m]u[n-m] \stackrel{Z_u}{\Longleftrightarrow} z^{-m} X(z) \label{prop1}
 \end{align}
 We also used one z-transform pair:
 \begin{align}
-	&\gamma^nu[n] \stackrel{Z_u}{\Longleftrightarrow} \frac{z}{z-\gamma} \quad\text{ROC: } |z|>|\gamma|. \label{tp1}
+	&\gamma^nu[n] \stackrel{Z_u}{\Longleftrightarrow} \frac{z}{z-\gamma} \quad\text{ROC: } |z|>|\gamma| \label{tp1}
 \end{align}
 
 \subsection{Modified Partial Fraction Expansion}
@@ -196,7 +196,7 @@ Having found both $y_1[n]$ and $y_2[n]$ we can take advantage of linearity to fi
 
 which means that 
 \begin{align}
-	C \left(Y_1(z) - Y_2(z) \right) &\stackrel{Z_u}{\Longleftrightarrow} C \left(y_1[n] - y_2[n] \right) \\
+	C \left(Y_1(z) - Y_2(z) \right) &\stackrel{Z_u}{\Longleftrightarrow} C \left(y_1[n] - y_2[n] \right), \\
 	Y(z) &\stackrel{Z_u}{\Longleftrightarrow} y[n].
 \end{align}
 
@@ -218,7 +218,7 @@ Equation (\ref{eqny}) is useful if we want to see what our projected balance wou
 	  &= \frac{\SI{10}{M}(p - 1)}{p\left(p^{12D} - 1\right)}
 \end{align}
 
-Having solved for $C$ we use MATLAB to find $C_{i,D}$ given our three interests and durations
+Having solved for $C$ we use MATLAB to find $C_{i,D}$ given our three interests and durations:
 \begin{table}[h]
 	\centering
 	\begin{tabular}{|r|r|r|r|}
