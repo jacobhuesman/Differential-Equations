@@ -63,9 +63,9 @@ Note that $E^{-1}$ is used to denote a delay operation. Having put equation \ref
 
 Which can be written as
 \begin{align}
-	Y(z) &=  \frac{C \left(\frac{z}{z-1} - \frac{z^{-12D+1}}{z-1} \right)}{\left(1 - \left(1 + \frac{i}{100} \right)^{\frac{1}{12}}z^{-1}\right)}. \label{eq3} \\
-	     &=  \frac{C \left(z - z^{-12D+1} \right)}
-	{\left(z-1\right)\left(1 - p z^{-1}\right)} \\
+	Y(z) &=  C\left(\frac{\frac{z}{z-1} - \frac{z^{-12D+1}}{z-1}}
+	{1 - \left(1 + \frac{i}{100} \right)^{\frac{1}{12}}z^{-1}}\right). \label{eq3} \\
+	     &=  C\left(\frac{z - z^{-12D+1}}{(z-1)(1 - p z^{-1})}\right)
 \end{align}
 where 
 \begin{align}
@@ -83,13 +83,24 @@ We also used one z-transform pair from a table:
 \subsection{Modified Partial Fraction Expansion}
 Like solving differential equations with the Laplace Transform, typically difference equations are solved by breaking the resulting equation into smaller pieces and then referencing a table of Z-Transforms to bring the equation back into the time domain. The process of breaking the equation into smaller pieces is known as the modified partial fraction expansion. It's the same the partial fraction expansion used in Laplace transforms except since most z-transform tables require a $z$ in the numerator, we pull a $z$ out of the equation before performing the expansion, then return it after the expansion is complete.
 
-We'll simplify (\ref{eq3}) and pull out the z before performing the expansion.
+We'll simplify (\ref{eq3}) and pull out the z before performing the expansion
 \begin{align}
-	\frac{Y(z)}{z} &=  \frac{C \left(z - z^{-12D+1} \right)}
-	{z\left(z-1\right)\left(1 - \left(1 + \frac{i}{100} \right)^{\frac{1}{12}}z^{-1}\right)} \\
-	&=  \frac{C \left(z - z^{-12D+1} \right)}
-	{\left(z-1\right)\left(1 - \left(z + \frac{i}{100} \right)^{\frac{1}{12}}\right)} \\
+	\frac{Y(z)}{z} &= C \left( \frac{z - z^{-12D+1}}{z(z-1)(1 - pz^{-1})} \right) \\
+	&= C \left( \frac{z - z^{-12D+1}}{(z-1)(z - p)} \right).
 \end{align}
+Let
+\begin{align}
+	\frac{Y_1(z)}{z} &= \frac{z}{(z-1)(z - p)} \\
+	\frac{Y_2(z)}{z} &= \frac{z^{-12D+1}}{(z-1)(z - p)}
+\end{align}
+then
+\begin{align}
+	\frac{Y(z)}{z} &= C \left( \frac{Y_1(z)}{z} - \frac{Y_2(z)}{z} \right).
+\end{align}
+
+We start by solving for $Y_1(z)$,
+
+
 
 
 \end{document}
