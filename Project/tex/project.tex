@@ -11,6 +11,38 @@
 \usepackage[table]{xcolor}
 \usepackage{siunitx}
 
+\usepackage[T1]{fontenc}
+\usepackage[scaled=1.0]{DejaVuSansMono}
+\usepackage{listings}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.965,0.973,0.980}
+\lstdefinestyle{Default-Custom-Style}{
+	backgroundcolor=\color{backcolour}, 
+	xleftmargin=0.5cm,
+	frame=tlbr,
+	framesep=8pt,
+	framerule=0pt,  
+	%commentstyle=\color{codegreen},
+	%keywordstyle=\color{magenta},
+	%numberstyle=\tiny\color{codegray},
+	%stringstyle=\color{codepurple},
+	basicstyle=\footnotesize\ttfamily,
+	breakatwhitespace=false,         
+	breaklines=true,                 
+	captionpos=b,                    
+	keepspaces=true,                 
+	numbers=none,                    
+	numbersep=5pt,                  
+	showspaces=false,                
+	showstringspaces=false,
+	showtabs=false,                  
+	tabsize=2
+}
+\lstset{style=Default-Custom-Style}
+
 \author{Jacob Huesman}
 \title{Using difference equations to analyze a financial problem}
 \begin{document}
@@ -73,7 +105,7 @@ where
 \end{align}
 Note that a delay in the time domain corresponds to a negative power of z in the z-domain by the time shifting property:
 \begin{align}
-	\text{If }m>0: x[n-m]u[n-m] \stackrel{Z_u}{\Longleftrightarrow} z^{-m} X(z)
+	\text{If }m>0: x[n-m]u[n-m] \stackrel{Z_u}{\Longleftrightarrow} z^{-m} X(z) \label{prop1}
 \end{align}
 We also used one z-transform pair from a table:
 \begin{align}
@@ -122,6 +154,131 @@ Now in order to use (\ref{tp1}) we need a $z$ in the numerator of each component
 
 \pagebreak
 \subsection{Inverse Z-Transform}
+Using (\ref{tp1}) we can find the inverse z-transform of $Y_1$
+\begin{align}
+	Z^{-1}\left[Y_1(z)\right] &= \frac{1}{1 - p}u[n] + \frac{p}{p - 1}p^n u[n] \\
+							  &= \left(\frac{1}{1 - p} + \frac{p}{p - 1}p^n \right)u[n] \\
+							  &= \left(\frac{1}{p - 1}p^{n+1} - \frac{1}{p - 1} \right)u[n] \\
+							  &= \frac{1}{p - 1}\left(p^{n+1} - 1 \right)u[n] \\
+							  &= y_1[n]
+\end{align}
+
+Having found $y_1[n]$ we can use the time shift property (\ref{prop1}) to find $y_2[n]$. First note that we originally wrote $Y_2(z)$ as
+\begin{align}
+	\frac{Y_2(z)}{z} &= \frac{z^{-12D+1}}{(z-1)(z - p)}.
+\end{align}
+
+However, since we have already done the modified partial fraction decomposition on $Y_1(z)$ and will be using properties to find $Y_2(z)$, we no longer need $Y_1(z)$, $Y_2(z)$, or $Y(z)$ in that form, so we write
+\begin{align}
+	Y_1(z) &= \frac{z^2}{(z-1)(z - p)} \\
+	Y_2(z) &= \frac{z^{-12D+2}}{(z-1)(z - p)} \\
+	Y(z)   &= C \left(Y_1(z) - Y_2(z) \right).
+\end{align}
+
+Notice 
+\begin{align}
+	Y_2(z) &= \frac{z^{-12D+2}}{(z-1)(z - p)} \\
+	       &= \frac{z^{2}}{(z-1)(z - p)}z^{-12D} \\
+	       &= Y_1(z) z^{-12D}
+\end{align}
+
+We can use the time shift property (\ref{prop1}) to find 
+\begin{align}
+	Z^{-1}\left[Y_2\right] &= Z^{-1}\left[Y_1(z) z^{-12D}\right] \\
+						   &= \frac{1}{p - 1}\left(p^{n+1-12D} - 1 \right)u[n-12D] \\
+						   &= y_2[n]
+\end{align}
+
+Having found both $y_1[n]$ and $y_2[n]$ we can use Linearity to find $y[n]$. The z-transform is a linear transformation, so 
+\begin{align}
+	ax[n] + by[n] \stackrel{Z_u}{\Longleftrightarrow} aX(z) + bY(z) \label{prop2}
+\end{align}
+
+Which means that 
+\begin{align}
+	C \left(Y_1(z) - Y_2(z) \right) &\stackrel{Z_u}{\Longleftrightarrow} C \left(y_1[n] - y_2[n] \right) \\
+	Y(z) &\stackrel{Z_u}{\Longleftrightarrow} y[n]
+\end{align}
+
+So using (\ref{prop2})
+\begin{align}
+	y[n] &= C(y_1[n] - y_2[n]) \\
+		 &= C \left(\frac{1}{p - 1}\left(p^{n+1} - 1 \right)u[n] - \frac{1}{p - 1}\left(p^{n+1-12D} - 1 \right)u[n-12D] \right) \\
+		 &= \frac{C}{p - 1}\left(\left(p^{n+1} - 1 \right)u[n] - \left(p^{n+1-12D} - 1 \right)u[n-12D] \right). \label{eqny}
+\end{align}
+
+We now have a solution to our investment problem for an arbitrary monthly payment amount, interest, and investment duration. A pretty cool application of the z-transform. 
+
+\subsection{Monthly payments}
+Equation (\ref{eqny}) is useful if we want to see what our projected balance would be on a given month. However we are interested in our monthly payments, given a goal, interest, and duration. So we'll rearrange (\ref{eqny}) as
+\begin{align}
+	C &= \frac{y[n](p - 1)}{\left(p^{n+1} - 1 \right)u[n] - \left(p^{n+1-12D} - 1 			\right)u[n-12D]} \\
+	  &= \frac{y[12D](p - 1)}{\left(p^{12D+1} - 1 \right)u[12D] - \left(p^{12D+1-12D} - 1 \right)u[12D-12D]} \\
+	  &= \frac{\SI{10}{M}(p - 1)}{p^{12D+1} - 1 - p^1 + 1} \\
+	  &= \frac{\SI{10}{M}(p - 1)}{p\left(p^{12D} - 1\right)}
+\end{align}
+
+Having solved for $C$ we use MATLAB to find $C_{i,D}$ given our three interests and durations
+\begin{table}[h]
+	\centering
+	\begin{tabular}{|r|r|r|r|}
+		\hline 
+		D, i & 0.5\% & 6\% & 10.5\% \\ 
+		\hline 
+		16 years & \$50,022.43 & \$31,447.18 & \$21,026.04 \\ 
+		\hline 
+		32 years & \$24,013.78 & \$8,882.5 & \$3,539.26 \\ 
+		\hline 
+		48 years & \$15,362.61 & \$3,146.68 & \$692.73 \\ 
+		\hline 
+	\end{tabular} 
+	\caption[Table 1:]{Monthly contribution for particular APYs and investment durations}
+\end{table}
+
+\pagebreak
+\subsection{Investment Growth}
+Looking at the investment growth with different APYs and investment durations shows pretty clearly that of the two factors we have some control over, duration is the more important one, it also happens to be the one we have the most control over. 
+\begin{center}
+	\includegraphics[width=1\linewidth]{../matlab/investment_growth.png}
+\end{center}
+
+
+\section{Conclusion}
+This  was a fairly simple example, but the techniques demonstrated here can be used to solve much more complex financial problems. You just need to be able to write it out as a difference equation and employ the techniques demonstrated above.
+
+Handling finances intelligently is important for long term success. Although using the z-transform is not the only way, or really even an obvious way, it's a fairly simple tool that can be employed to quickly solve a financial problem. 
+
+\pagebreak
+\section{Appendix}
+\subsection{MATLAB Code}
+\begin{lstlisting}[language=MATLAB]
+clear;
+
+i = [0.5, 6.0, 10.5];
+D = [16, 32, 48];
+Y_r = 10E6;
+
+p = (1 + i./100).^(1/12);
+
+C = (Y_r .* (p - 1)) ./ (p .* (p.^(12.*D') - 1));
+P = 12.*D'.*C;
+
+u = @(t) 1.0 .* (t >= 0);
+y = @(n, C, p, D) C ./ (p - 1) .* ( (p.^(n + 1) - 1).*u(n) - (p.^(n + 1 - 12*D) - 1).*u(n - 12*D));
+for j = 1:1:3
+	n = 0:1:(D(j)*12);
+	P_t = (n+1) .* C(j,:)';
+	y_t = y(n, C(j,:)', p', D(j));
+	for k = 1:1:3     
+		subplot(3,3,((j-1)*3+k-1)+1);
+		plot(n, y_t(k,:), '-', n, P_t(k,:), '--', 'color', [0,0,0], 'linewidth', 1);
+		title("APY of " + string(i(k))+"% over " + string(D(j)) + " years");
+		legend('Value of Account', 'Principle Invested', 'Location','northwest');
+		xlabel('Months');
+		grid on;
+	end
+end
+\end{lstlisting}
 
 
 \end{document}
