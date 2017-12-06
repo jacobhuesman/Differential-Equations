@@ -62,7 +62,7 @@ Suppose you would like to retire with 10 million dollars in savings. To keep the
 We start by picking three realistic annual percentage rates reflective of different investments:
 \begin{align*}
 	i_{low}  &= \SI{0.5}{\%}  \\
-	i_{med}  &= \SI{0.6}{\%}  \\
+	i_{med}  &= \SI{6.0}{\%}  \\
 	i_{high} &= \SI{10.5}{\%}
 \end{align*}
 
@@ -77,7 +77,7 @@ We define our investment time intervals as:
 \subsection{Difference Equation}
 Let $n=0$ correspond to the first investment contribution, let $n = 12D -1$ be the last investment contribution, and let $n = 12D$ be the time when the retirement account is to have the desired 10 million dollars in savings. Our difference equation is then
 \begin{align}
-	y[n] &= \left(1 + \frac{i}{100} \right)^{\frac{1}{12}} y[n-1] + C (u[n] - u[n-12D]). \label{eq1}
+	y[n] &= \left(1 + \frac{i}{100} \right)^{\frac{1}{12}} y[n-1] + C (u[n] - u[n-12D]), \label{eq1}
 \end{align}
 where $y[n]$ is the balance at month $n$, $\left(1 + \frac{i}{100} \right)^{\frac{1}{12}} y[n-1]$ is last month's balance plus the accrued interest, and $C(u[n] - u[n-12D])$ is the payments made each month over the specified duration. For the payments made each month, we had to include some unit step functions to handle the last month where no payment is made, but interest is still accrued.
 
@@ -96,8 +96,8 @@ Note that $E^{-1}$ is used to denote a delay operation. Having put equation \ref
 Which can be written as
 \begin{align}
 	Y(z) &=  C\left(\frac{\frac{z}{z-1} - \frac{z^{-12D+1}}{z-1}}
-	{1 - \left(1 + \frac{i}{100} \right)^{\frac{1}{12}}z^{-1}}\right). \label{eq3} \\
-	     &=  C\left(\frac{z - z^{-12D+1}}{(z-1)(1 - p z^{-1})}\right)
+	{1 - \left(1 + \frac{i}{100} \right)^{\frac{1}{12}}z^{-1}}\right) \\
+	     &=  C\left(\frac{z - z^{-12D+1}}{(z-1)(1 - p z^{-1})}\right), \label{eq3}
 \end{align}
 where 
 \begin{align}
@@ -105,15 +105,15 @@ where
 \end{align}
 Note that a delay in the time domain corresponds to a negative power of z in the z-domain by the time shifting property:
 \begin{align}
-	\text{If }m>0: x[n-m]u[n-m] \stackrel{Z_u}{\Longleftrightarrow} z^{-m} X(z) \label{prop1}
+	\text{If }m>0: x[n-m]u[n-m] \stackrel{Z_u}{\Longleftrightarrow} z^{-m} X(z). \label{prop1}
 \end{align}
-We also used one z-transform pair from a table:
+We also used one z-transform pair:
 \begin{align}
-	&\gamma^nu[n] \stackrel{Z_u}{\Longleftrightarrow} \frac{z}{z-\gamma} & &\text{ROC: } |z|>|\gamma| \label{tp1}
+	&\gamma^nu[n] \stackrel{Z_u}{\Longleftrightarrow} \frac{z}{z-\gamma} \quad\text{ROC: } |z|>|\gamma|. \label{tp1}
 \end{align}
 
 \subsection{Modified Partial Fraction Expansion}
-Like solving differential equations with the Laplace Transform, typically difference equations are solved by breaking the resulting equation into smaller pieces and then referencing a table of Z-Transforms to bring the equation back into the time domain. The process of breaking the equation into smaller pieces is known as the modified partial fraction expansion. It's the same the partial fraction expansion used in Laplace transforms except since most z-transform tables require a $z$ in the numerator, we pull a $z$ out of the equation before performing the expansion, then return it after the expansion is complete.
+Like solving differential equations with the Laplace transform, typically difference equations are solved by breaking the z-transformed equation into smaller pieces and then referencing a table of z-transform pairs to bring the equation back into the time domain. The process of breaking the equation into smaller pieces is known as the modified partial fraction expansion. It's the same as the partial fraction expansion used in Laplace transforms except since most z-transform tables require a $z$ in the numerator, we pull a $z$ out of the equation before performing the expansion, then return it after the expansion is complete.
 
 We'll simplify (\ref{eq3}) and pull out the z before performing the expansion
 \begin{align}
@@ -122,8 +122,8 @@ We'll simplify (\ref{eq3}) and pull out the z before performing the expansion
 \end{align}
 Let
 \begin{align}
-	\frac{Y_1(z)}{z} &= \frac{z}{(z-1)(z - p)} \\
-	\frac{Y_2(z)}{z} &= \frac{z^{-12D+1}}{(z-1)(z - p)}
+	\frac{Y_1(z)}{z} &= \frac{z}{(z-1)(z - p)}, \\
+	\frac{Y_2(z)}{z} &= \frac{z^{-12D+1}}{(z-1)(z - p)},
 \end{align}
 then
 \begin{align}
@@ -133,18 +133,18 @@ then
 We start by solving for $Y_1(z)$,
 \begin{align}
 	\frac{Y_1(z)}{z} &= \frac{z}{(z-1)(z - p)} \\
-					 &= \frac{A}{z-1} + \frac{B}{z-p}
+					 &= \frac{A}{z-1} + \frac{B}{z-p}.
 \end{align}
 
 Using the Heaviside cover-up method
 \begin{align}
-	A &= \frac{1}{1 - p} \\
-	B &= \frac{p}{p - 1}
+	A &= \frac{1}{1 - p}, \\
+	B &= \frac{p}{p - 1},
 \end{align}
-So
+so
 \begin{align}
 	\frac{Y_1(z)}{z} &= \left(\frac{1}{1 - p}\right)\left(\frac{1}{z-1}\right) 
-						+ \left(\frac{p}{p - 1}\right)\left(\frac{1}{z-p}\right) 
+						+ \left(\frac{p}{p - 1}\right)\left(\frac{1}{z-p}\right).
 \end{align}
 Now in order to use (\ref{tp1}) we need a $z$ in the numerator of each component of the sum, so we move the $z$ on the LHS back over,
 \begin{align}
@@ -154,13 +154,13 @@ Now in order to use (\ref{tp1}) we need a $z$ in the numerator of each component
 
 \pagebreak
 \subsection{Inverse Z-Transform}
-Using (\ref{tp1}) we can find the inverse z-transform of $Y_1$
+Using (\ref{tp1}) we can find the inverse z-transform of $Y_1(z)$,
 \begin{align}
 	Z^{-1}\left[Y_1(z)\right] &= \frac{1}{1 - p}u[n] + \frac{p}{p - 1}p^n u[n] \\
 							  &= \left(\frac{1}{1 - p} + \frac{p}{p - 1}p^n \right)u[n] \\
 							  &= \left(\frac{1}{p - 1}p^{n+1} - \frac{1}{p - 1} \right)u[n] \\
 							  &= \frac{1}{p - 1}\left(p^{n+1} - 1 \right)u[n] \\
-							  &= y_1[n]
+							  &= y_1[n].
 \end{align}
 
 Having found $y_1[n]$ we can use the time shift property (\ref{prop1}) to find $y_2[n]$. First note that we originally wrote $Y_2(z)$ as
@@ -179,25 +179,25 @@ Notice
 \begin{align}
 	Y_2(z) &= \frac{z^{-12D+2}}{(z-1)(z - p)} \\
 	       &= \frac{z^{2}}{(z-1)(z - p)}z^{-12D} \\
-	       &= Y_1(z) z^{-12D}
+	       &= Y_1(z) z^{-12D}.
 \end{align}
 
-We can use the time shift property (\ref{prop1}) to find 
+We can then use the time shift property (\ref{prop1}) to find $y_2[n]$,
 \begin{align}
 	Z^{-1}\left[Y_2\right] &= Z^{-1}\left[Y_1(z) z^{-12D}\right] \\
 						   &= \frac{1}{p - 1}\left(p^{n+1-12D} - 1 \right)u[n-12D] \\
-						   &= y_2[n]
+						   &= y_2[n].
 \end{align}
 
-Having found both $y_1[n]$ and $y_2[n]$ we can use Linearity to find $y[n]$. The z-transform is a linear transformation, so 
+Having found both $y_1[n]$ and $y_2[n]$ we can take advantage of linearity to find $y[n]$. The z-transform is a linear transformation, so 
 \begin{align}
-	ax[n] + by[n] \stackrel{Z_u}{\Longleftrightarrow} aX(z) + bY(z) \label{prop2}
+	ax[n] + by[n] \stackrel{Z_u}{\Longleftrightarrow} aX(z) + bY(z), \label{prop2}
 \end{align}
 
-Which means that 
+which means that 
 \begin{align}
 	C \left(Y_1(z) - Y_2(z) \right) &\stackrel{Z_u}{\Longleftrightarrow} C \left(y_1[n] - y_2[n] \right) \\
-	Y(z) &\stackrel{Z_u}{\Longleftrightarrow} y[n]
+	Y(z) &\stackrel{Z_u}{\Longleftrightarrow} y[n].
 \end{align}
 
 So using (\ref{prop2})
