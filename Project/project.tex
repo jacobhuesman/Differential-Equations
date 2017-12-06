@@ -28,18 +28,18 @@ Suppose you would like to retire with 10 million dollars in savings. To keep the
 \section{Solution}
 \subsection{Interest Rate and Duration}
 We start by picking three realistic annual percentage rates reflective of different investments:
-\begin{align}
+\begin{align*}
 	i_{low}  &= \SI{0.5}{\%}  \\
 	i_{med}  &= \SI{0.6}{\%}  \\
 	i_{high} &= \SI{10.5}{\%}
-\end{align}
+\end{align*}
 
 We define our investment time intervals as:
-\begin{align}
+\begin{align*}
 	D_{short} &= \SI{16}{years}  \\
 	D_{med}   &= \SI{32}{years}  \\
 	D_{long}  &= \SI{48}{years}
-\end{align}
+\end{align*}
 
 \pagebreak
 \subsection{Difference Equation}
@@ -77,7 +77,7 @@ Note that a delay in the time domain corresponds to a negative power of z in the
 \end{align}
 We also used one z-transform pair from a table:
 \begin{align}
-	&\gamma^nu[n] \stackrel{Z_u}{\Longleftrightarrow} \frac{z}{z-\gamma} & &\text{ROC: } |z|>|\gamma|
+	&\gamma^nu[n] \stackrel{Z_u}{\Longleftrightarrow} \frac{z}{z-\gamma} & &\text{ROC: } |z|>|\gamma| \label{tp1}
 \end{align}
 
 \subsection{Modified Partial Fraction Expansion}
@@ -99,8 +99,29 @@ then
 \end{align}
 
 We start by solving for $Y_1(z)$,
+\begin{align}
+	\frac{Y_1(z)}{z} &= \frac{z}{(z-1)(z - p)} \\
+					 &= \frac{A}{z-1} + \frac{B}{z-p}
+\end{align}
 
+Using the Heaviside cover-up method
+\begin{align}
+	A &= \frac{1}{1 - p} \\
+	B &= \frac{p}{p - 1}
+\end{align}
+So
+\begin{align}
+	\frac{Y_1(z)}{z} &= \left(\frac{1}{1 - p}\right)\left(\frac{1}{z-1}\right) 
+						+ \left(\frac{p}{p - 1}\right)\left(\frac{1}{z-p}\right) 
+\end{align}
+Now in order to use (\ref{tp1}) we need a $z$ in the numerator of each component of the sum, so we move the $z$ on the LHS back over,
+\begin{align}
+	Y_1(z) &= \left(\frac{1}{1 - p}\right)\left(\frac{z}{z-1}\right) 
+	+ \left(\frac{p}{p - 1}\right)\left(\frac{z}{z-p}\right).
+\end{align}
 
+\pagebreak
+\subsection{Inverse Z-Transform}
 
 
 \end{document}
