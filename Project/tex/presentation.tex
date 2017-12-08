@@ -1,0 +1,275 @@
+\documentclass[
+%    display=notes,
+%    mode=print,
+%    paper=smartboard,
+    orient=landscape,
+    style=sailor
+]{powerdot}
+
+\usepackage{amsmath}
+\usepackage{siunitx}
+\usepackage{graphicx}
+
+\pdsetup{
+    palette=River,
+}
+
+\usepackage[utf8]{inputenc}
+ 
+\author{Jacob Huesman}
+\title{Difference Equations and Finance}
+\date{\today}
+ 
+\begin{document}
+ 
+\maketitle
+ 
+\begin{note}{Introduction}
+  \begin{itemize}
+  \item Like differential equations, difference equations can be used to model the behavior of a system. The main difference between the two being that differential equations are used to describe continuous time systems and difference equations are used to describe discrete time systems. 
+  \item Like the Laplace transform of a differential equation, the z-transform of a difference equation can be used to simplify solving a linear time-invariant system. 
+  \item Modeling a system with difference equations and utilizing the z-transform is very useful, as digital systems represent information in a discrete fashion, and there's also systems that are easier to model in discrete steps rather than as a continuous function.
+  \end{itemize}
+\end{note}
+
+\begin{slide}{Problem}
+    Suppose you would like to retire with 10 million dollars in savings. To keep the difference equations simple, let's say that:
+    \begin{itemize}
+    \item you invest uniform monthly payments for a fixed number of years,
+    \item that you receive a fixed annual percent yield, 
+    \item and that the interest is compounded monthly. 
+    \end{itemize}
+	Solve this problem with z-transform techniques for:
+	\begin{itemize}
+		\item three different interest rates (low, medium, high), and
+		\item three different time intervals (short, average, long).
+	\end{itemize}
+	For each interest rate and investment duration, compute the required (fixed) monthly payments $C_{i,D}$ needed to realize the 10 million dollar retirement goal.
+\end{slide}
+
+\begin{slide}{Rates and Interval}
+	Pick three annual percentage rates reflective of different investments:
+	\begin{align*}
+	i_{low}  &= \SI{0.5}{\%}  \\
+	i_{med}  &= \SI{6.0}{\%}  \\
+	i_{high} &= \SI{10.5}{\%}
+	\end{align*}
+	
+	Investment time intervals:
+	\begin{align*}
+	D_{short} &= \SI{16}{years}  \\
+	D_{med}   &= \SI{32}{years}  \\
+	D_{long}  &= \SI{48}{years}
+	\end{align*}
+\end{slide}
+
+\begin{slide}{Difference Equation}
+	Let 
+	\begin{itemize}
+		\item $n=0$ correspond to the first investment contribution, 
+		\item $n = 12D -1$ be the last investment contribution, and 
+		\item $n = 12D$ be the time when the retirement account is to have the desired 10 million dollars in savings.
+	\end{itemize}
+	Our difference equation is then
+	\begin{align}
+	y[n] &= \left(1 + \frac{i}{100} \right)^{\frac{1}{12}} y[n-1] + C (u[n] - u[n-12D]), \label{eq1}
+	\end{align}
+	where 
+	\begin{itemize}
+		\item $y[n]$ is the balance at month $n$, 
+		\item $\left(1 + \frac{i}{100} \right)^{\frac{1}{12}} y[n-1]$ is last month's balance plus interest, and 
+		\item $C(u[n] - u[n-12D])$ is the payments made each month.
+	\end{itemize}
+\end{slide}
+
+\begin{slide}{Z-Transform (1/2)}
+	Now putting equation \ref{eq1} in standard form and simplifying we get,
+	\begin{align}
+	y[n] - \left(1 + \frac{i}{100} \right)^{\frac{1}{12}} y[n-1] &= C (u[n] - u[n-12D]) \\
+	\left(1 - \left(1 + \frac{i}{100} \right)^{\frac{1}{12}}E^{-1}\right)y[n] &= C (u[n] - u[n-12D]). \label{eq2}
+	\end{align}
+	Note that $E^{-1}$ is used to denote a delay operation. Having put equation \ref{eq1} in a more standard form we can take the z-transform of both sides,
+	\begin{align}
+	\left(1 - \left(1 + \frac{i}{100} \right)^{\frac{1}{12}}z^{-1}\right)Y(z) &= C \left(\frac{z}{z-1} - \frac{z^{-12D+1}}{z-1} \right).
+	\end{align}
+\end{slide}
+
+\begin{slide}{Z-Transform (2/2)}	
+	Which can be written as
+	\begin{align}
+	Y(z) &=  C\left(\frac{\frac{z}{z-1} - \frac{z^{-12D+1}}{z-1}}
+	{1 - \left(1 + \frac{i}{100} \right)^{\frac{1}{12}}z^{-1}}\right) \\
+	&=  C\left(\frac{z - z^{-12D+1}}{(z-1)(1 - p z^{-1})}\right), \label{eq3}
+	\end{align}
+	where 
+	\begin{align}
+	p = \left(1 + \frac{i}{100} \right)^{\frac{1}{12}}.
+	\end{align}
+\end{slide}
+
+\begin{slide}{Z-Transform Properties}
+	Note that a delay in the time domain corresponds to a negative power of z in the z-domain by the time shifting property:
+	\begin{align}
+	\text{If }m>0: x[n-m]u[n-m] \stackrel{Z_u}{\Longleftrightarrow} z^{-m} X(z) \label{prop1}
+	\end{align}
+	We also used one z-transform pair:
+	\begin{align}
+	&\gamma^nu[n] \stackrel{Z_u}{\Longleftrightarrow} \frac{z}{z-\gamma} \quad\text{ROC: } |z|>|\gamma| \label{tp1}
+	\end{align}
+\end{slide}
+
+\begin{slide}{Modified PFE (1/3)}
+	We'll simplify (\ref{eq3}) and pull out a z before performing the expansion
+	\begin{align}
+	\frac{Y(z)}{z} &= C \left( \frac{z - z^{-12D+1}}{z(z-1)(1 - pz^{-1})} \right) \\
+	&= C \left( \frac{z - z^{-12D+1}}{(z-1)(z - p)} \right).
+	\end{align}
+	Let
+	\begin{align}
+	\frac{Y_1(z)}{z} &= \frac{z}{(z-1)(z - p)}, \\
+	\frac{Y_2(z)}{z} &= \frac{z^{-12D+1}}{(z-1)(z - p)},
+	\end{align}
+	then
+	\begin{align}
+	\frac{Y(z)}{z} &= C \left( \frac{Y_1(z)}{z} - \frac{Y_2(z)}{z} \right).
+	\end{align}
+\end{slide}
+
+\begin{note}{Modified Partial Fraction Expansion}
+	Like solving differential equations with the Laplace transform, typically difference equations are solved by breaking the z-transformed equation into smaller pieces and then referencing a table of z-transform pairs to bring the equation back into the time domain. The process of breaking the equation into smaller pieces is known as the modified partial fraction expansion. It's the same as the partial fraction expansion used in Laplace transforms except since most z-transform tables require a $z$ in the numerator, we pull a $z$ out of the equation before performing the expansion, then return it after the expansion is complete.
+\end{note}
+
+\begin{slide}{Modfied PFE (2/3)}	
+	We start by solving for $Y_1(z)$,
+	\begin{align}
+	\frac{Y_1(z)}{z} &= \frac{z}{(z-1)(z - p)} \\
+	&= \frac{A}{z-1} + \frac{B}{z-p}.
+	\end{align}
+	
+	Using the Heaviside cover-up method
+	\begin{align}
+	A &= \frac{1}{1 - p}, \\
+	B &= \frac{p}{p - 1},
+	\end{align}
+	so
+	\begin{align}
+	\frac{Y_1(z)}{z} &= \left(\frac{1}{1 - p}\right)\left(\frac{1}{z-1}\right) 
+	+ \left(\frac{p}{p - 1}\right)\left(\frac{1}{z-p}\right).
+	\end{align}
+\end{slide}
+
+\begin{slide}{Modified PFE (3/3)}
+	Now in order to use (\ref{tp1}) we need a $z$ in the numerator of each component of the sum, so we move the $z$ on the LHS back over,
+	\begin{align}
+	Y_1(z) &= \left(\frac{1}{1 - p}\right)\left(\frac{z}{z-1}\right) 
+	+ \left(\frac{p}{p - 1}\right)\left(\frac{z}{z-p}\right).
+	\end{align}
+\end{slide}
+
+\begin{slide}{Inv. Z-Transform (1/4)}
+	Using (\ref{tp1}) we can find the inverse z-transform of $Y_1(z)$,
+	\begin{align}
+	Z^{-1}\left[Y_1(z)\right] &= \frac{1}{1 - p}u[n] + \frac{p}{p - 1}p^n u[n] \\
+	&= \left(\frac{1}{1 - p} + \frac{p}{p - 1}p^n \right)u[n] \\
+	&= \left(\frac{1}{p - 1}p^{n+1} - \frac{1}{p - 1} \right)u[n] \\
+	&= \frac{1}{p - 1}\left(p^{n+1} - 1 \right)u[n] \\
+	&= y_1[n].
+	\end{align}
+	
+	Having found $y_1[n]$ we can use the time shift property (\ref{prop1}) to find $y_2[n]$. First note that we originally wrote $Y_2(z)$ as
+	\begin{align}
+	\frac{Y_2(z)}{z} &= \frac{z^{-12D+1}}{(z-1)(z - p)}.
+	\end{align}
+\end{slide}
+
+	
+\begin{slide}{Inv. Z-Transform (2/4)}
+	Now
+	\begin{align}
+	Y_1(z) &= \frac{z^2}{(z-1)(z - p)} \\
+	Y_2(z) &= \frac{z^{-12D+2}}{(z-1)(z - p)} \\
+	Y(z)   &= C \left(Y_1(z) - Y_2(z) \right).
+	\end{align}
+	
+	Notice 
+	\begin{align}
+	Y_2(z) &= \frac{z^{-12D+2}}{(z-1)(z - p)} \\
+	&= \frac{z^{2}}{(z-1)(z - p)}z^{-12D} \\
+	&= Y_1(z) z^{-12D}.
+	\end{align}
+\end{slide}
+
+\begin{note}
+	However, since we have already done the modified partial fraction decomposition on $Y_1(z)$ and will be using properties to find $Y_2(z)$, we no longer need $Y_1(z)$, $Y_2(z)$, or $Y(z)$ in that form, so we write
+\end{note}
+
+\begin{slide}{Inv. Z-Transform (3/4)}
+	We can then use the time shift property (\ref{prop1}) to find $y_2[n]$,
+	\begin{align}
+	Z^{-1}\left[Y_2\right] &= Z^{-1}\left[Y_1(z) z^{-12D}\right] \\
+	&= \frac{1}{p - 1}\left(p^{n+1-12D} - 1 \right)u[n-12D] \\
+	&= y_2[n].
+	\end{align}
+	
+	Having found both $y_1[n]$ and $y_2[n]$ we can take advantage of linearity to find $y[n]$. The z-transform is a linear transformation, so 
+	\begin{align}
+	ax[n] + by[n] \stackrel{Z_u}{\Longleftrightarrow} aX(z) + bY(z), \label{prop2}
+	\end{align}
+	
+	which means that 
+	\begin{align}
+	C \left(Y_1(z) - Y_2(z) \right) &\stackrel{Z_u}{\Longleftrightarrow} C \left(y_1[n] - y_2[n] \right), \\
+	Y(z) &\stackrel{Z_u}{\Longleftrightarrow} y[n].
+	\end{align}
+\end{slide}
+	
+\begin{slide}{Inv. Z-Transform (4/4)}
+	Using (\ref{prop2})
+	\begin{align}
+	y[n] &= C(y_1[n] - y_2[n]) \\
+	&= C \Bigl(\frac{1}{p - 1}\left(p^{n+1} - 1 \right)u[n] \\
+	&\qquad- \frac{1}{p - 1}\left(p^{n+1-12D} - 1 \right)u[n-12D] \Bigr) \\
+	&= \frac{C}{p - 1}\left(\left(p^{n+1} - 1 \right)u[n] - \left(p^{n+1-12D} - 1 \right)u[n-12D] \right). \label{eqny}
+	\end{align}
+\end{slide}
+
+\begin{note}
+	We now have a solution to our investment problem for an arbitrary monthly payment amount, interest, and investment duration. A pretty cool application of the z-transform. 
+\end{note}
+
+\begin{slide}{Monthly Payments (1/2)}
+	Equation (\ref{eqny}) is useful if we want to see what our projected balance would be on a given month. However we are interested in our monthly payments, given a goal, interest, and duration. So we'll rearrange (\ref{eqny}) as
+	\begin{align}
+	C &= \frac{y[n](p - 1)}{\left(p^{n+1} - 1 \right)u[n] - \left(p^{n+1-12D} - 1 			\right)u[n-12D]} \\
+	&= \frac{y[12D](p - 1)}{\left(p^{12D+1} - 1 \right)u[12D] - \left(p^{12D+1-12D} - 1 \right)u[12D-12D]} \\
+	&= \frac{\SI{10}{M}(p - 1)}{p^{12D+1} - 1 - p^1 + 1} \\
+	&= \frac{\SI{10}{M}(p - 1)}{p\left(p^{12D} - 1\right)}
+	\end{align}
+\end{slide}
+	
+\begin{slide}{Monthly Payments (2/2)}
+	Having solved for $C$ we use MATLAB to find $C_{i,D}$ given our three APYs and durations:
+	\begin{table}[h]
+		\centering
+		\begin{tabular}{|r|r|r|r|}
+			\hline 
+			D, i & 0.5\% & 6\% & 10.5\% \\ 
+			\hline 
+			16 years & \$50,022.43 & \$31,447.18 & \$21,026.04 \\ 
+			\hline 
+			32 years & \$24,013.78 & \$8,882.5 & \$3,539.26 \\ 
+			\hline 
+			48 years & \$15,362.61 & \$3,146.68 & \$692.73 \\ 
+			\hline 
+		\end{tabular} 
+		\caption[Table 1:]{Monthly contribution for particular APYs and investment durations}
+	\end{table}
+\end{slide}
+
+\begin{slide}{Investment Growth}
+	%\includegraphics[width=0.8\textwidth,natwidth=610,natheight=642]{../investment_growth.ps}
+	\includegraphics[width=0.95\textwidth]{test.eps}
+\end{slide}
+
+
+\end{document}
